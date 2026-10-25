@@ -1,0 +1,27 @@
+Aula n.º 1 de 24-09-2026
+Apresentação da unidade curricular: objetivos, assuntos, modo de funcionamento e avaliação.
+Introdução à representação física e simbólica da informação em computadores: transístores integrados como elementos com dois estados, definição de bit, grupo ordenado de bits, byte e octeto.
+Sistemas de numeração posicionais em base 2 (binário) e base 10 (decimal). Representação de números inteiros sem sinal e de números com parte fracionária utilizando potências inteiras (positivas e negativas) da base.
+Métodos de conversão de base entre binário e decimal: método das divisões sucessivas para a parte inteira e das multiplicações sucessivas para a parte fracionária.
+O sistema de numeração hexadecimal (base 16): notação, conversão de e para a base decimal, e equivalência direta com o sistema binário através do agrupamento de bits em blocos de quatro.
+Aritmética binária com operandos sem sinal: regras e algoritmos para a adição (gestão do transporte), multiplicação (soma de produtos parciais) e subtração (regras de troca de bits/empréstimo para casos em que o diminuendo é maior ou igual ao subtraendo).
+Aula n.º 2 de 01-10-2026
+Representação de números inteiros com sinal. Análise das limitações impostas pela representação de dados com número fixo de bits e caracterização do erro de overflow. Estudo da representação em sinal e grandeza, englobando a função do bit de sinal, o intervalo de valores representáveis, a existência de dupla representação para o valor zero e as regras operatórias correspondentes. Estudo detalhado da representação em complemento para 2: motivação, definição formal, gama de representação, métodos para determinação do simétrico e execução de operações de adição e subtração. Critério de deteção de overflow em complemento para 2 com base no sinal dos operandos e do resultado. Regras para a extensão do formato de representação com aumento do número de bits, com destaque para a extensão de sinal. Princípios de funcionamento da multiplicação em complemento para 2.
+
+Representação de carateres e símbolos gráficos. Contextualização histórica do processamento de texto em sistemas digitais. Estrutura e características do código ASCII de 7 bits. Extensões de 8 bits com a norma ISO-8859-1 (Latin-1). A norma Unicode: conceito de pontos de código ("code points") e esquemas de codificação em memória, nomeadamente UTF-8 (comprimento variável) e UTF-32 (comprimento fixo).
+
+Representação de números em vírgula flutuante. Conceito de notação científica, necessidade de representação de gamas alargadas de valores e princípios de normalização. Introdução à norma IEEE-754 e seus elementos fundamentais. Especificação do formato IEEE-754 de precisão simples (32 bits): repartição dos campos para o bit de sinal, o expoente codificado em excesso-127 e a parte fracionária do significando normalizado.
+Aula n.º 3 de 08-10-2026
+Introdução aos Circuitos Combinatórios: Definição e modelo concetual de caixa negra para o processamento de informação binária com N entradas e uma saída. Definição exaustiva de funções booleanas e representação através de tabelas de verdade.
+
+Especificação Algébrica e Álgebra de Boole: Axiomas para a álgebra de dois elementos {0,1}, operações lógicas e princípio da dualidade. Teoremas fundamentais a uma, duas e três variáveis, incluindo as Leis de De Morgan, convenções de precedência de operadores e demonstração exaustiva por tabela de verdade. Simplificação algébrica de expressões booleanas e visão geral dos métodos de minimização.
+
+Representações Canónicas: Teorema da Expansão de Shannon e a sua aplicação à decomposição de funções. Forma Canónica Disjuntiva, expressão em soma de produtos (SOP) e conceito de termos mínimos (minterms). Representação em dois níveis. Forma Canónica Conjuntiva, expressão em produto de somas (POS) obtida por dualidade e conceito de termos máximos (maxterms).
+
+Minimização Gráfica com Mapas de Karnaugh: Fundamentos do método: teorema da adjacência lógica e utilização do Código Gray na organização das células. Estruturação do mapa e mapeamento de funções de três variáveis a partir da tabela de verdade. Regras de agrupamento de uns para a determinação de expressões SOP mínimas. Regras de agrupamento de zeros para a determinação de expressões POS mínimas. Aplicação do método a funções de quatro variáveis. Resumo das regularidades de agrupamento e regras de eliminação de variáveis em mapas de N variáveis.
+Aula n.º 4 de 15-10-2026
+Estudo de funções lógicas especificadas incompletamente, com a introdução do conceito de condições irrelevantes ("don't care") e a sua integração em mapas de Karnaugh para a simplificação de expressões booleanas.
+Apresentação das portas lógicas elementares (AND, OR, NOT, NAND, NOR) e das portas XOR e XNOR, incluindo as respetivas equações, propriedades e tabelas de verdade. Análise da correspondência entre expressões algébricas e circuitos compostos por portas lógicas, com destaque para a relação entre a simplificação da expressão e a minimização da dimensão do circuito.
+Metodologias de projeto de circuitos digitais baseadas na abordagem modular e na descrição hierárquica ("dividir e conquistar") para a gestão da complexidade.
+Caraterísticas físicas dos componentes lógicos, focando o tempo de propagação (atraso) e a análise dos seus efeitos na resposta temporal dos sinais.
+Conceito e projeto de circuitos iterativos baseados na replicação de módulos

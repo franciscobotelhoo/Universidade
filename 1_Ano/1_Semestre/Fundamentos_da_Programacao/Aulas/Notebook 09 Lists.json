@@ -1,0 +1,2281 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "Cxi1aF3fIMcx"
+   },
+   "source": [
+    "# NB09: Lists\n",
+    "\n",
+    "## Programming Fundamentals\n",
+    "\n",
+    "## L.EIC/2026-27\n",
+    "\n",
+    "#### Coordinator: Alexandra Mendes, FEUP/DEI and INESC TEC"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "RCSjogF5KWxU"
+   },
+   "source": [
+    "> “A list is only as strong as its weakest link.”\n",
+    "\n",
+    "Donald E. Knuth"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "gsPSAfqnrYm2"
+   },
+   "source": [
+    "## Goals\n",
+    "\n",
+    "By the end of this class, the student should be able to:\n",
+    "\n",
+    "- Describe lists as mutable sequences, and use on them the sequence operations already known from strings and tuples\n",
+    "\n",
+    "- Use the main list methods, and distinguish the methods that change a list from the ones that only return a value\n",
+    "\n",
+    "- Build new lists with the accumulator pattern, and convert between strings and lists\n",
+    "\n",
+    "- Explain the difference between `==` and `is`, and recognise aliasing, including when a list is passed to a function\n",
+    "\n",
+    "- Distinguish pure functions from modifiers, and shallow copies from deep copies\n",
+    "\n",
+    "- Use nested lists to represent tables and matrices\n",
+    "\n",
+    "- Explain why `range()` is lazy, and avoid building lists that are not needed\n",
+    "\n",
+    "- Recognise which list operations are cheap and which are costly"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "2dxEbA4gLhJ3"
+   },
+   "source": [
+    "## Bibliography\n",
+    "\n",
+    "- Peter Wentworth, Jeffrey Elkner, Allen B. Downey, and Chris Meyers, *How to Think Like a Computer Scientist — Learning with Python 3* (Section 5.3) [[PDF](https://media.readthedocs.org/pdf/howtothink/latest/howtothink.pdf)]\n",
+    "[[HTML](http://openbookproject.net/thinkcs/python/english3e/)]\n",
+    "\n",
+    "- Brad Miller and David Ranum, *Learning with Python: Interactive Edition*. Based on material by Jeffrey Elkner, Allen B. Downey, and Chris Meyers (Chapter 10) [[HTML](https://runestone.academy/runestone/books/published/thinkcspy/index.html)]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "mafHbfE5AyNf"
+   },
+   "source": [
+    "# 9 Data type: Lists"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "JkL7dILjq99h"
+   },
+   "source": [
+    "## 9.1 Lists are mutable sequences\n",
+    "\n",
+    "- A **list** is an ordered collection of values, written between square brackets.\n",
+    "\n",
+    "- The values that make up a list are called its **elements**, or its **items**.\n",
+    "\n",
+    "- Like the elements of a tuple, the elements of a list can have **any type**, even within the same list, and can be other lists (**nested** lists).\n",
+    "\n",
+    "- Lists, tuples and strings are all **sequences**.\n",
+    "\n",
+    "- The big difference: lists are **mutable**. We can change their elements, add new ones, and remove them."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "R6oLcwPKWfv1"
+   },
+   "outputs": [],
+   "source": [
+    "numbers = [10, 20, 30, 40]\n",
+    "words = [\"spam\", \"bungee\", \"swallow\"]\n",
+    "stuff = [\"hello\", 2.0, 5, [10, 20]]    # mixed types, and a nested list\n",
+    "empty = []                             # the empty list\n",
+    "print(numbers, words, stuff, empty)\n",
+    "print(type(numbers))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "KBy9JbXuAnBu"
+   },
+   "source": [
+    "The conversion function `list()` turns any sequence into a list:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "fNgWbWYERpTA"
+   },
+   "outputs": [],
+   "source": [
+    "print(list(\"Crunchy Frog\"))\n",
+    "print(list(range(5)))\n",
+    "print(list((1, 2, 3)))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "o7yx1wPk0qd8"
+   },
+   "source": [
+    "### What you already know\n",
+    "\n",
+    "Lists support all the sequence operations we have used with strings and tuples. Predict the output:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "k69LadmyL7vi"
+   },
+   "outputs": [],
+   "source": [
+    "numbers = [17, 123, 87, 34, 66, 8398, 44]\n",
+    "print(numbers[2], numbers[-2])\n",
+    "print(numbers[1:3], numbers[:2], numbers[5:])\n",
+    "print(len(numbers), 87 in numbers, 5 in numbers, 5 not in numbers)\n",
+    "print([1, 2, 3] + [4, 5], [0] * 4)\n",
+    "print(min(numbers), max(numbers), sum(numbers))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "IifIReBRVx3k"
+   },
+   "source": [
+    "Think about each result before running the code:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "SV2EgdGkNfWn"
+   },
+   "outputs": [],
+   "source": [
+    "a_list = [3, 67, \"cat\", [56, 57, \"dog\"], [], 3.14, False]\n",
+    "print(len(a_list))\n",
+    "print(3.14 in a_list)\n",
+    "print(\"dog\" in a_list)\n",
+    "print(a_list[3][2])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "huG8GP38g4o5"
+   },
+   "source": [
+    "### Quiz: out of range\n",
+    "\n",
+    "Which of these expressions raises an error?\n",
+    "\n",
+    "```python\n",
+    "xs = [10, 20, 30]\n",
+    "```\n",
+    "\n",
+    "- **A)** `xs[-3]`\n",
+    "- **B)** `xs[1:10]`\n",
+    "- **C)** `xs[3]`\n",
+    "- **D)** `xs[3:]`\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**C)** `xs[3]` raises `IndexError: list index out of range`.\n",
+    "The valid indices of a list with 3 elements are `0`, `1` and `2` (or `-1`, `-2` and `-3`),\n",
+    "so `xs[len(xs)]` is always an error: a classic *off-by-one* mistake.\n",
+    "\n",
+    "Slices, on the other hand, are forgiving: bounds past the end are clipped, so `xs[1:10]` is `[20, 30]` and `xs[3:]` is `[]`.\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "akCIykD6H6b9"
+   },
+   "source": [
+    "### List traversal\n",
+    "\n",
+    "As with strings, we can traverse the elements directly, or through their indices.\n",
+    "Using `len()` as the upper bound means the loop still works if the list changes size."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "3HGH4eNHsSSg"
+   },
+   "outputs": [],
+   "source": [
+    "horsemen = [\"war\", \"famine\", \"pestilence\", \"death\"]\n",
+    "\n",
+    "for h in horsemen:\n",
+    "    print(h)\n",
+    "\n",
+    "for i in range(len(horsemen)):\n",
+    "    print(i, horsemen[i])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "RCENdLx2oZTM"
+   },
+   "source": [
+    "A list of tuples (NB08). How many students are taking CompSci? (Which loop pattern is this?)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "2cLMQzelLlev"
+   },
+   "outputs": [],
+   "source": [
+    "students = [\n",
+    "    (\"John\", [\"CompSci\", \"Physics\"]),\n",
+    "    (\"Vusi\", [\"Maths\", \"CompSci\", \"Stats\"]),\n",
+    "    (\"Jess\", [\"CompSci\", \"Accounting\", \"Economics\", \"Management\"]),\n",
+    "    (\"Sarah\", [\"InfSys\", \"Accounting\", \"Economics\", \"CommLaw\"]),\n",
+    "    (\"Zuki\", [\"Sociology\", \"Economics\", \"Law\", \"Stats\", \"Music\"])]\n",
+    "\n",
+    "counter = 0\n",
+    "for name, subjects in students:\n",
+    "    if \"CompSci\" in subjects:\n",
+    "        counter += 1\n",
+    "\n",
+    "print(\"The number of students taking CompSci is\", counter)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "DHbWuWa7K89Z"
+   },
+   "source": [
+    "## 9.2 Changing lists\n",
+    "\n",
+    "### Item assignment\n",
+    "\n",
+    "Unlike strings and tuples, lists are **mutable**: we can change their elements."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "gvoWlngh68xT"
+   },
+   "outputs": [],
+   "source": [
+    "fruit = [\"banana\", \"apple\", \"quince\"]\n",
+    "fruit[0] = \"pear\"\n",
+    "fruit[2] = \"orange\"\n",
+    "print(fruit)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "CGwNopGmB6bg"
+   },
+   "source": [
+    "### Slice assignment and `del`\n",
+    "\n",
+    "We can also replace a whole slice (which may change the length of the list), and remove elements with the `del` statement:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Xdp0LndrsX8W"
+   },
+   "outputs": [],
+   "source": [
+    "letters = [\"a\", \"b\", \"c\", \"d\", \"e\", \"f\"]\n",
+    "letters[1:3] = [\"x\", \"y\", \"z\"]\n",
+    "print(letters)\n",
+    "del letters[0]\n",
+    "print(letters)\n",
+    "del letters[1:3]\n",
+    "print(letters)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "MNJAYKJ1UXXF"
+   },
+   "source": [
+    "A slice with no elements, `[i:i]`, lets us **insert** without replacing anything. Assigning the empty list **deletes** (but `del` is clearer):"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "WXLCpaNfhs0g"
+   },
+   "outputs": [],
+   "source": [
+    "letters = [\"a\", \"d\", \"f\"]\n",
+    "letters[1:1] = [\"b\", \"c\"]    # insert before position 1\n",
+    "print(letters)\n",
+    "letters[4:4] = [\"e\"]\n",
+    "print(letters)\n",
+    "letters[1:3] = []            # the same as del letters[1:3]\n",
+    "print(letters)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "35257ftpLEvZ"
+   },
+   "source": [
+    "### Changing every element\n",
+    "\n",
+    "To change each element during a traversal, we need its **index**:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "ymrCLJBlyukH"
+   },
+   "outputs": [],
+   "source": [
+    "xs = [1, 2, 3, 4, 5]\n",
+    "for i in range(len(xs)):\n",
+    "    xs[i] = xs[i] ** 2\n",
+    "print(xs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "lSOiMuBLV2Tn"
+   },
+   "source": [
+    "Or, with `enumerate()`, both the index and the value:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "HubID1uZFgSr"
+   },
+   "outputs": [],
+   "source": [
+    "xs = [1, 2, 3, 4, 5]\n",
+    "for i, x in enumerate(xs):\n",
+    "    xs[i] = x ** 2\n",
+    "print(xs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "Hea5cjkfZ9Oy"
+   },
+   "source": [
+    "What is printed here? Why?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "3FiQwqtxlL1J"
+   },
+   "outputs": [],
+   "source": [
+    "xs = [1, 2, 3, 4, 5]\n",
+    "for x in xs:\n",
+    "    x = x ** 2\n",
+    "print(xs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "aQbD1P4UqiBQ"
+   },
+   "source": [
+    "`x = x ** 2` only makes the variable `x` refer to a new value; the list is never touched."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ouUvLH5blWPf"
+   },
+   "source": [
+    "### Tuples are immutable... or are they?\n",
+    "\n",
+    "What happens in each of these cells?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "inH3nmQA096S"
+   },
+   "outputs": [],
+   "source": [
+    "student = (\"Jess\", [\"CompSci\", \"Accounting\", \"Economics\"])\n",
+    "student[1][1] = \"Maths\"\n",
+    "print(student)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "EdYyCN7I47fv"
+   },
+   "outputs": [],
+   "source": [
+    "student[1] = [\"Physics\"]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "3V8lG5HP8kd0"
+   },
+   "source": [
+    "The tuple cannot change: it always holds the same two objects. But one of those objects is a list, and **the list itself** is mutable."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "KmZrisczWC7c"
+   },
+   "source": [
+    "## 9.3 List methods\n",
+    "\n",
+    "Like strings, lists have methods, accessed with the dot operator."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "kiJmPGK0W5jx"
+   },
+   "outputs": [],
+   "source": [
+    "mylist = []\n",
+    "mylist.append(5)          # add 5 at the end\n",
+    "mylist.append(12)\n",
+    "print(mylist)\n",
+    "mylist.insert(1, 14)      # insert 14 at position 1, shifting the others\n",
+    "print(mylist)\n",
+    "mylist.extend([5, 9, 5, 11])    # add all the elements of another sequence\n",
+    "print(mylist)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "7yrDl0Nf7GpL"
+   },
+   "outputs": [],
+   "source": [
+    "print(mylist.count(5))    # how many 5s?\n",
+    "print(mylist.index(9))    # position of the first 9\n",
+    "mylist.remove(5)          # remove the first 5\n",
+    "print(mylist)\n",
+    "last = mylist.pop()       # remove AND return the last element\n",
+    "print(last, mylist)\n",
+    "second = mylist.pop(1)    # remove AND return the element at position 1\n",
+    "print(second, mylist)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "6vamdGt0maCh"
+   },
+   "outputs": [],
+   "source": [
+    "mylist.reverse()\n",
+    "print(mylist)\n",
+    "mylist.sort()\n",
+    "print(mylist)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "tnlN6wNu4IbT"
+   },
+   "source": [
+    "### List methods (summary)\n",
+    "\n",
+    "| Method  | Parameters      | Result   | Description  |\n",
+    "|:--------|:----------------|:---------|:-------------|\n",
+    "| `append`  | item            | mutator  | Adds a new item to the end of a list  |\n",
+    "| `extend`  | iterable        | mutator  | Adds the elements of the iterable to the end of a list  |\n",
+    "| `insert`  | position, item  | mutator  | Inserts a new item at the position given  |\n",
+    "| `remove`  | item            | mutator  | Removes the first occurrence of item  |\n",
+    "| `sort`    | none            | mutator  | Modifies a list to be sorted  |\n",
+    "| `reverse` | none            | mutator  | Modifies a list to be in reverse order  |\n",
+    "| `pop`     | none            | hybrid   | Removes and returns the last item  |\n",
+    "| `pop`     | position        | hybrid   | Removes and returns the item at position  |\n",
+    "| `index`   | item            | returns idx | Returns the position of the first occurrence of item  |\n",
+    "| `count`   | item            | returns ct  | Returns the number of occurrences of item  |\n",
+    "\n",
+    "- A **mutator** method changes the list and returns nothing (actually, it returns `None`).\n",
+    "- A **hybrid** method changes the list and also returns a value.\n",
+    "- The other methods simply **return** a value, and the list is unchanged.\n",
+    "\n",
+    "For the full list, see [Mutable Sequence Types](https://docs.python.org/3/library/stdtypes.html#mutable-sequence-types) in the Python documentation."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ncb0SwIReRR6"
+   },
+   "source": [
+    "### `append` or `extend`?\n",
+    "\n",
+    "Predict the output:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "dJF0wP3vF3c8"
+   },
+   "outputs": [],
+   "source": [
+    "a = [1, 2]\n",
+    "b = [1, 2]\n",
+    "a.append([3, 4])\n",
+    "b.extend([3, 4])\n",
+    "print(a, len(a))\n",
+    "print(b, len(b))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "tCrXHUg2YQnq"
+   },
+   "source": [
+    "### A classic bug\n",
+    "\n",
+    "What is printed?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Ce7z7lOXNAbA"
+   },
+   "outputs": [],
+   "source": [
+    "numbers = [3, 1, 2]\n",
+    "numbers = numbers.sort()\n",
+    "print(numbers)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "y6878kbsahJm"
+   },
+   "source": [
+    "`sort()` is a mutator: it sorts the list **in place** and returns `None` (NB05), which is then assigned to `numbers`.\n",
+    "The same happens with `numbers = numbers.append(4)`.\n",
+    "\n",
+    "Remember `word.upper()` (NB06): string methods never change the string, they **return a new one**.\n",
+    "Mutator list methods do the opposite: they change the list and return `None`."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "Ca05RFRunzqw"
+   },
+   "source": [
+    "### Quiz: `remove()`\n",
+    "\n",
+    "What is printed?\n",
+    "\n",
+    "```python\n",
+    "xs = [10, 20, 30]\n",
+    "xs.remove(1)\n",
+    "print(xs)\n",
+    "```\n",
+    "\n",
+    "- **A)** `[10, 30]`\n",
+    "- **B)** `[20, 30]`\n",
+    "- **C)** `[10, 20, 30]`\n",
+    "- **D)** `ValueError`\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**D)** `ValueError: list.remove(x): x not in list`.\n",
+    "`remove()` takes a **value**, not a position: it looks for an element equal to `1`, and there is none.\n",
+    "To remove by position, use `pop(i)` or `del xs[i]`.\n",
+    "\n",
+    "`index()` behaves in the same way, and `pop()` on an empty list raises `IndexError`.\n",
+    "When in doubt, test with `in` first:\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "7wZyVGOeUvfJ"
+   },
+   "outputs": [],
+   "source": [
+    "xs = [10, 20, 30]\n",
+    "x = 1\n",
+    "if x in xs:\n",
+    "    xs.remove(x)\n",
+    "else:\n",
+    "    print(x, \"is not in the list\")\n",
+    "del xs[1]    # remove by position\n",
+    "print(xs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "Lxq8l2GPiU3m"
+   },
+   "source": [
+    "### `sort()` or `sorted()`?\n",
+    "\n",
+    "- `list.sort()` changes the list.\n",
+    "- The built-in function `sorted()` returns a **new** sorted list, and leaves the original unchanged. It works with any sequence (strings and tuples too).\n",
+    "- Both accept the optional arguments `reverse` (`False` by default) and `key`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "DODUNtQVCKND"
+   },
+   "outputs": [],
+   "source": [
+    "numbers = [3, 1, 4, 2]\n",
+    "new_list = sorted(numbers)\n",
+    "print(new_list, numbers)     # the original is unchanged\n",
+    "numbers.sort()\n",
+    "print(numbers)               # now it has changed\n",
+    "numbers.sort(reverse=True)\n",
+    "print(numbers)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "IssDj4PTTKtb"
+   },
+   "source": [
+    "The same pair exists for reversing: `reverse()` changes the list, while the slice `[::-1]` (as with strings) returns a **new**, reversed list."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "2TxxDBfz5LJF"
+   },
+   "outputs": [],
+   "source": [
+    "numbers = [3, 1, 4, 2]\n",
+    "print(numbers[::-1], numbers)\n",
+    "numbers.reverse()\n",
+    "print(numbers)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "fzWSeDKHjORH"
+   },
+   "source": [
+    "The `key` argument is a function: the elements are sorted by the value that the function returns for each one of them.\n",
+    "`min()` and `max()` accept a `key` too."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "6JarRe7RVka2"
+   },
+   "outputs": [],
+   "source": [
+    "words = [\"banana\", \"fig\", \"apple\", \"cherry\"]\n",
+    "print(sorted(words))\n",
+    "print(sorted(words, key=len))\n",
+    "print(sorted([1, -2, 3, -4], key=abs))\n",
+    "print(max(words, key=len), min(words, key=len))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "FBGVxVk8RtD2"
+   },
+   "source": [
+    "Tuples are compared element by element (NB08), so a list of tuples is sorted by the first element, then the second, and so on.\n",
+    "We can choose another order with our own `key` function:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "uR47pXLYezBY"
+   },
+   "outputs": [],
+   "source": [
+    "for name, subjects in sorted(students):\n",
+    "    print(name)\n",
+    "\n",
+    "def number_of_subjects(student):\n",
+    "    return len(student[1])\n",
+    "\n",
+    "print()\n",
+    "for name, subjects in sorted(students, key=number_of_subjects, reverse=True):\n",
+    "    print(name, len(subjects))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "3hBGZW3M4Fz6"
+   },
+   "source": [
+    "### Not all operations cost the same\n",
+    "\n",
+    "A list keeps (references to) its elements in consecutive positions in memory, like seats in a row:\n",
+    "\n",
+    "- Adding or removing at the **end** (`append()`, `pop()`) is fast: no other element moves.\n",
+    "- Adding or removing at the **beginning** (`insert(0, x)`, `pop(0)`) shifts **all** the other elements one position.\n",
+    "- `in`, `index()`, `count()` and `remove()` compare the item with the elements one by one: the longer the list, the slower they are.\n",
+    "\n",
+    "Both loops below build a list with the same 100 000 numbers (in opposite orders):"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Hq2AK7EGHZbK"
+   },
+   "outputs": [],
+   "source": [
+    "import time\n",
+    "\n",
+    "n = 100_000\n",
+    "\n",
+    "start = time.time()\n",
+    "xs = []\n",
+    "for i in range(n):\n",
+    "    xs.append(i)        # add at the end\n",
+    "print(\"append:   \", time.time() - start, \"seconds\")\n",
+    "\n",
+    "start = time.time()\n",
+    "ys = []\n",
+    "for i in range(n):\n",
+    "    ys.insert(0, i)     # add at the beginning\n",
+    "print(\"insert(0):\", time.time() - start, \"seconds\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "oXi0d9TH4QgT"
+   },
+   "source": [
+    "The gap grows with the length of the list. You will study this formally (*algorithmic complexity*) in later courses."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "CcmZ2JeV1rDs"
+   },
+   "source": [
+    "## 9.4 Building lists\n",
+    "\n",
+    "Whenever we need a function that creates and returns a list, the *pattern* is usually an **accumulator** (NB07) that starts as the empty list:\n",
+    "\n",
+    "```\n",
+    "initialise a result variable to be an empty list\n",
+    "loop\n",
+    "   create a new element\n",
+    "   append it to the result\n",
+    "return the result\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "dTjf4fVYpxnR"
+   },
+   "outputs": [],
+   "source": [
+    "def is_prime(n):\n",
+    "    \"\"\"Return True if n is a prime number (see NB07).\"\"\"\n",
+    "    if n < 2:\n",
+    "        return False\n",
+    "    for d in range(2, n):\n",
+    "        if n % d == 0:\n",
+    "            return False\n",
+    "    return True\n",
+    "\n",
+    "def primes_less_than(n):\n",
+    "    \"\"\"Return a list of all prime numbers less than n.\"\"\"\n",
+    "    result = []\n",
+    "    for i in range(2, n):\n",
+    "        if is_prime(i):\n",
+    "            result.append(i)\n",
+    "    return result\n",
+    "\n",
+    "print(primes_less_than(30))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "8UEHzSqpRp9T"
+   },
+   "source": [
+    "### Strings and lists: `split()` and `join()`\n",
+    "\n",
+    "- The string method `split()` (NB06) breaks a string into a list of words.\n",
+    "  By default, any amount of whitespace separates the words; an optional argument, the **delimiter**, chooses another separator.\n",
+    "\n",
+    "- The inverse of `split()` is `join()`: we choose a **separator** string and use it as the glue between the elements of a list."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "lbLiELYyHYiu"
+   },
+   "outputs": [],
+   "source": [
+    "song = \"The rain in Spain stays mainly in the plain!\"\n",
+    "words = song.split()\n",
+    "print(words)\n",
+    "print(song.split(\"ai\"))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "NBEjE4o24hOS"
+   },
+   "source": [
+    "Careful: `split()` with no argument is not the same as `split(\" \")`. Predict the output:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "DRET79IqJzQt"
+   },
+   "outputs": [],
+   "source": [
+    "text = \"one  two   three\"    # several spaces between words\n",
+    "print(text.split())\n",
+    "print(text.split(\" \"))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "JZPGSEZ4zBms"
+   },
+   "source": [
+    "With an explicit delimiter, every single space is a separator, and two consecutive separators have an empty string between them."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Yw5ffwCwnB36"
+   },
+   "outputs": [],
+   "source": [
+    "print(\";\".join(words))\n",
+    "print(\" --- \".join(words))\n",
+    "print(\"\".join(words))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "1racjP4M9DZH"
+   },
+   "source": [
+    "### Quiz: `sorted()` on a string\n",
+    "\n",
+    "What is printed?\n",
+    "\n",
+    "```python\n",
+    "word = \"banana\"\n",
+    "print(sorted(word))\n",
+    "```\n",
+    "\n",
+    "- **A)** `aaabnn`\n",
+    "- **B)** `['a', 'a', 'a', 'b', 'n', 'n']`\n",
+    "- **C)** `['banana']`\n",
+    "- **D)** `TypeError`\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**B)** `sorted()` accepts any sequence, but it always returns a **list**.\n",
+    "To get a string back, glue the characters with `join()`: `\"\".join(sorted(word))` gives `\"aaabnn\"`.\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "7Fx6mqSFDGX0"
+   },
+   "source": [
+    "### Quiz: `join()` with numbers\n",
+    "\n",
+    "What is printed?\n",
+    "\n",
+    "```python\n",
+    "print(\"-\".join([1, 2, 3]))\n",
+    "```\n",
+    "\n",
+    "- **A)** `TypeError`\n",
+    "- **B)** `1-2-3`\n",
+    "- **C)** `-1-2-3-`\n",
+    "- **D)** `[1, '-', 2, '-', 3]`\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**A)** `TypeError: sequence item 0: expected str instance, int found`.\n",
+    "`join()` only glues **strings**. The numbers must be converted first (accumulator pattern, again):\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "FZBJQ6c1suD6"
+   },
+   "outputs": [],
+   "source": [
+    "numbers = [1, 2, 3]\n",
+    "strings = []\n",
+    "for n in numbers:\n",
+    "    strings.append(str(n))\n",
+    "print(\"-\".join(strings))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "MpKjdXqjYhoj"
+   },
+   "source": [
+    "What is printed?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "3Qle4hSQKDzr"
+   },
+   "outputs": [],
+   "source": [
+    "myname = \"Edgar Allan Poe\"\n",
+    "init = \"\"\n",
+    "for aname in myname.split():\n",
+    "    init = init + aname[0]\n",
+    "print(init)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "OjDqw3JOOaW2"
+   },
+   "source": [
+    "### Exercise: long words\n",
+    "\n",
+    "Write `long_words(text, n)`, which returns a list with the words of `text` that have more than `n` characters."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "UG06rkubofay"
+   },
+   "outputs": [],
+   "source": [
+    "def long_words(text, n):\n",
+    "    \"\"\"Return a list with the words of text with more than n characters.\"\"\"\n",
+    "    return []    # skeleton\n",
+    "\n",
+    "print(long_words(\"\", 3) == [])\n",
+    "print(long_words(\"I like Python\", 10) == [])\n",
+    "print(long_words(\"The rain in Spain stays mainly in the plain\", 4) == [\"Spain\", \"stays\", \"mainly\", \"plain\"])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "aD0SdTlXNHB8"
+   },
+   "source": [
+    "## 9.5 Objects and references\n",
+    "\n",
+    "### `==` and `is`\n",
+    "\n",
+    "- `==` tests **value equality**: do the two objects have the same value?\n",
+    "\n",
+    "- `is` tests **reference equality**: do the two names refer to the **same object**?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "n3mfncZlJrwW"
+   },
+   "outputs": [],
+   "source": [
+    "a = [81, 82, 83]\n",
+    "b = [81, 82, 83]\n",
+    "print(a == b)\n",
+    "print(a is b)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "IqUicR0VR55J"
+   },
+   "source": [
+    "`a` and `b` have the same value, but they are two different lists:\n",
+    "\n",
+    "![references](https://raw.githubusercontent.com/fp-leic/public/main/notebooks/08/refs.png)\n",
+    "\n",
+    "Because lists can change, Python must create a new list each time we write `[...]`: otherwise, changing `a` would also change `b`.\n",
+    "\n",
+    "With **immutable** values (numbers, strings, tuples), Python *may* reuse the same object, since nobody can change it.\n",
+    "For example, `\"banana\" is \"banana\"` is usually `True`. But this is an optimisation, not a rule:\n",
+    "use `==` to compare values, and keep `is` for `None` (NB05)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "kJARveliTQHt"
+   },
+   "source": [
+    "### Aliasing\n",
+    "\n",
+    "If we assign one variable to another, both variables refer to the **same** object."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "TBEm9BDmBDAU"
+   },
+   "outputs": [],
+   "source": [
+    "a = [81, 82, 83]\n",
+    "b = a          # not a copy: a second name for the same list\n",
+    "print(a is b)\n",
+    "b[0] = 5\n",
+    "print(a)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "uMPiZepZhrz6"
+   },
+   "source": [
+    "![alias](https://raw.githubusercontent.com/fp-leic/public/main/notebooks/08/lists2.png)\n",
+    "\n",
+    "- Because the same list has two different names, `a` and `b`, we say that it is **aliased**.\n",
+    "\n",
+    "- Changes made through one alias are seen through the other.\n",
+    "\n",
+    "- Why would you want two names for the same list? Ordinarily, you don't. But Python creates aliases automatically when we pass a list to a function (section 9.6).\n",
+    "\n",
+    "See it all in [Python Tutor](http://www.pythontutor.com/visualize.html#code=a%20%3D%20%5B81,%2082,%2083%5D%0Ab%20%3D%20%5B81,%2082,%2083%5D%0A%0Aprint%28a%20%3D%3D%20b%29%0Aprint%28a%20is%20b%29%0A%0Ab%20%3D%20a%0Aprint%28a%20%3D%3D%20b%29%0Aprint%28a%20is%20b%29%0A%0Ab%5B0%5D%20%3D%205%0Aprint%28a%29&cumulative=false&curInstr=0&heapPrimitives=nevernest&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false), now!"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "8nNZFtjeccSK"
+   },
+   "source": [
+    "### Repetition and references\n",
+    "\n",
+    "With a list, the repetition operator `*` repeats the **references**, not the objects."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "e69zw2PUlTBd"
+   },
+   "outputs": [],
+   "source": [
+    "origlist = [45, 76, 34, 55]\n",
+    "print(origlist * 3)\n",
+    "\n",
+    "newlist = [origlist] * 3\n",
+    "print(newlist)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "cqoq4ymgdzAe"
+   },
+   "source": [
+    "![repetition](https://raw.githubusercontent.com/fp-leic/public/main/notebooks/08/repetition.png)\n",
+    "\n",
+    "What is printed now?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "GvbDjlUAwITM"
+   },
+   "outputs": [],
+   "source": [
+    "origlist[1] = 100\n",
+    "print(newlist)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "6Sv7alhxvyNv"
+   },
+   "outputs": [],
+   "source": [
+    "newlist[1][1] = \"X\"\n",
+    "print(newlist)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "DP57wx902hrA"
+   },
+   "source": [
+    "![aliases](https://raw.githubusercontent.com/fp-leic/public/main/notebooks/08/alias2.png)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ZgCSTY9GqC79"
+   },
+   "source": [
+    "### Quiz: `+=` and aliases\n",
+    "\n",
+    "What is printed?\n",
+    "\n",
+    "```python\n",
+    "a = [1, 2]\n",
+    "b = a\n",
+    "a += [3]\n",
+    "a = a + [4]\n",
+    "print(a)\n",
+    "print(b)\n",
+    "```\n",
+    "\n",
+    "- **A)** `[1, 2, 3, 4]` and `[1, 2]`\n",
+    "- **B)** `[1, 2, 3, 4]` and `[1, 2, 3, 4]`\n",
+    "- **C)** `[1, 2, 3, 4]` and `[1, 2, 3]`\n",
+    "- **D)** `[1, 2, 3, 4]` and `[1, 2, 4]`\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**C)**\n",
+    "\n",
+    "- With lists, `a += [3]` is the same as `a.extend([3])`: it **changes** the list. `b` is an alias of that list, so it sees the change.\n",
+    "- `a = a + [4]` builds a **new** list and makes `a` refer to it. `b` still refers to the old list.\n",
+    "\n",
+    "So `x += y` and `x = x + y` are not always the same! With immutable values (numbers, strings, tuples) they are, since the object cannot change.\n",
+    "\n",
+    "Bonus: like `extend()`, `+=` accepts any sequence, so `a += \"hi\"` adds `'h'` and `'i'`, while `a = a + \"hi\"` is a `TypeError`.\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "tC6yFuKHldUZ"
+   },
+   "source": [
+    "## 9.6 Lists and functions\n",
+    "\n",
+    "### List parameters\n",
+    "\n",
+    "- Passing a list as an argument passes a *reference* to the list, **not a copy**.\n",
+    "\n",
+    "- So parameter passing creates an **alias**: the caller and the function use two names for one and the same list."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "umgMJ5QJK45k"
+   },
+   "source": [
+    "![double_stuff](https://raw.githubusercontent.com/fp-leic/public/main/notebooks/09/double_stuff.png)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "hha07FVPOy7t"
+   },
+   "outputs": [],
+   "source": [
+    "def double_stuff(a_list):\n",
+    "    \"\"\"Overwrite each element in a_list with double its value.\"\"\"\n",
+    "    for (index, stuff) in enumerate(a_list):\n",
+    "        a_list[index] = 2 * stuff\n",
+    "\n",
+    "things = [2, 5, 9]\n",
+    "print(things)\n",
+    "double_stuff(things)\n",
+    "print(things)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "gdWW0Xowr1as"
+   },
+   "source": [
+    "See it in [Python Tutor](http://www.pythontutor.com/visualize.html#code=%23%20A%20modifier%20or%20inpure%20function%20%28see%20later%29%0Adef%20double_stuff%28a_list%29%3A%0A%20%20%20%20%22%22%22%20Overwrite%20each%20element%20in%20a_list%20with%20double%20its%20value.%20%22%22%22%0A%20%20%20%20for%20%28index,%20stuff%29%20in%20enumerate%28a_list%29%3A%0A%20%20%20%20%20%20%20%20a_list%5Bindex%5D%20%3D%202%20*%20stuff%0A%0Athings%20%3D%20%5B2,%205,%209%5D%0Aprint%28things%29%0A%0Adouble_stuff%28things%29%0Aprint%28things%29&cumulative=false&curInstr=14&heapPrimitives=nevernest&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false), now!\n",
+    "\n",
+    "Compare with NB05: assigning a new value to a parameter (`x = x + 1`) never affects the caller.\n",
+    "**Changing the object** that the parameter refers to (`a_list[index] = ...`) does."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "l9B1UE8ePr5F"
+   },
+   "source": [
+    "### Quiz: changing a list inside a function\n",
+    "\n",
+    "What is printed?\n",
+    "\n",
+    "```python\n",
+    "def add_zero(xs):\n",
+    "    xs = xs + [0]\n",
+    "\n",
+    "def add_one(xs):\n",
+    "    xs.append(1)\n",
+    "\n",
+    "nums = [5]\n",
+    "add_zero(nums)\n",
+    "add_one(nums)\n",
+    "print(nums)\n",
+    "```\n",
+    "\n",
+    "- **A)** `[5, 0, 1]`\n",
+    "- **B)** `[5, 1]`\n",
+    "- **C)** `[5]`\n",
+    "- **D)** `[5, 0]`\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**B)** `xs = xs + [0]` creates a new list and makes the **local** variable `xs` refer to it:\n",
+    "`nums` is not affected, and the new list is lost when the function returns.\n",
+    "`xs.append(1)` changes the object that both `xs` and `nums` refer to.\n",
+    "\n",
+    "For `add_zero()` to be useful, it must **return** the new list, and the caller must keep it: `nums = add_zero(nums)`.\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ONagknFbZCOw"
+   },
+   "source": [
+    "### Pure functions and modifiers\n",
+    "\n",
+    "- Functions which take lists as arguments and change them are called **modifiers**, and the changes they make are called **side effects**.\n",
+    "\n",
+    "- A **pure function** does not produce side effects: it communicates with the caller only through its parameters, which it does not change, and its return value.\n",
+    "\n",
+    "A pure version of `double_stuff()`:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "0g1pFIPHSdHF"
+   },
+   "outputs": [],
+   "source": [
+    "def double_stuff2(a_list):\n",
+    "    \"\"\"Return a new list which contains the doubles of the elements in a_list.\"\"\"\n",
+    "    new_list = []\n",
+    "    for value in a_list:\n",
+    "        new_list.append(2 * value)\n",
+    "    return new_list\n",
+    "\n",
+    "things = [2, 5, 9]\n",
+    "doubled = double_stuff2(things)\n",
+    "print(things)\n",
+    "print(doubled)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "MgRfcd8kQdLn"
+   },
+   "source": [
+    "| | Pure function | Modifier |\n",
+    "|:--|:--|:--|\n",
+    "| Changes the original data? | No | Yes |\n",
+    "| Returns new data? | Yes | Often `None` |\n",
+    "| Side effects? | No | Yes |\n",
+    "| Example | `sorted(lst)` | `lst.sort()` |\n",
+    "\n",
+    "- Anything that can be done with modifiers can also be done with pure functions.\n",
+    "  Some programming languages only allow pure functions, like [Haskell](https://en.wikipedia.org/wiki/Haskell).\n",
+    "- There is some evidence that programs that use pure functions are faster to develop and less error-prone.\n",
+    "- Nevertheless, modifiers are convenient at times, and in some cases pure functions are less efficient.\n",
+    "\n",
+    "> In general, write pure functions whenever it is reasonable to do so, and resort to modifiers only if there is a compelling advantage."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "LTPHSadoCVbm"
+   },
+   "source": [
+    "### Do not change a list while you traverse it\n",
+    "\n",
+    "We want to remove the even numbers. What is printed?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Gufrba0tSpT2"
+   },
+   "outputs": [],
+   "source": [
+    "nums = [2, 4, 6, 7, 8]\n",
+    "for n in nums:\n",
+    "    if n % 2 == 0:\n",
+    "        nums.remove(n)\n",
+    "print(nums)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "bL4VhTUjOMmY"
+   },
+   "source": [
+    "The `for` loop moves along the positions of the list. When an element is removed, the following elements shift one position to the left,\n",
+    "and the loop skips the element that moved into the current position. Step through it in Python Tutor.\n",
+    "\n",
+    "The safe way is to build a **new** list:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "1eDKaG6uE627"
+   },
+   "outputs": [],
+   "source": [
+    "nums = [2, 4, 6, 7, 8]\n",
+    "odds = []\n",
+    "for n in nums:\n",
+    "    if n % 2 != 0:\n",
+    "        odds.append(n)\n",
+    "print(odds)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "xgmV2AjC6afa"
+   },
+   "source": [
+    "### Quiz: default values\n",
+    "\n",
+    "Parameters can have default values (like `reverse=False` in `sort()`). What is printed?\n",
+    "\n",
+    "```python\n",
+    "def add_item(item, basket=[]):\n",
+    "    basket.append(item)\n",
+    "    return basket\n",
+    "\n",
+    "print(add_item(\"apple\"))\n",
+    "print(add_item(\"pear\"))\n",
+    "```\n",
+    "\n",
+    "- **A)** `['apple']` and `['apple', 'pear']`\n",
+    "- **B)** `['apple']` and `['pear']`\n",
+    "- **C)** `['apple']` and an error\n",
+    "- **D)** `['pear']` and `['pear']`\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**A)** The default value is created **once**, when `def` runs, not on every call.\n",
+    "So every call that does not pass a `basket` uses the **same** list, which keeps growing: yet another alias!\n",
+    "\n",
+    "Never use a mutable value (like `[]`) as a default. Use `None`, and create the list inside the function:\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "CLI71fNYmphN"
+   },
+   "outputs": [],
+   "source": [
+    "def add_item(item, basket=None):\n",
+    "    if basket is None:\n",
+    "        basket = []\n",
+    "    basket.append(item)\n",
+    "    return basket\n",
+    "\n",
+    "print(add_item(\"apple\"))\n",
+    "print(add_item(\"pear\"))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "f9uwlYKCEFKj"
+   },
+   "source": [
+    "## 9.7 Cloning lists\n",
+    "\n",
+    "- Often we want to change a list and also keep a copy of the original.\n",
+    "\n",
+    "- `copy()` returns a new list with the same elements. The slice `a[:]` and `list(a)` do the same, but `copy()` makes the intention clearer."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Sqb7gXVALon2"
+   },
+   "outputs": [],
+   "source": [
+    "a = [1, 2, 3]\n",
+    "b = a.copy()\n",
+    "print(b == a, b is a)\n",
+    "b[0] = 5\n",
+    "print(a, b)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "UVCcV7tMj7Sd"
+   },
+   "source": [
+    "### Shallow copies\n",
+    "\n",
+    "Now we are free to change the copy without changing the original... or are we?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "RPBK5QD8NWIU"
+   },
+   "outputs": [],
+   "source": [
+    "l1 = [1, [2, 3], [4, 5, 6]]\n",
+    "l2 = l1.copy()\n",
+    "l1[0] = 7\n",
+    "print(\"l1:\", l1)\n",
+    "print(\"l2:\", l2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "VECmOTzeROOj"
+   },
+   "outputs": [],
+   "source": [
+    "l1[1][1] = 99\n",
+    "print(\"l1:\", l1)\n",
+    "print(\"l2:\", l2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "2TXjqHa8kjXo"
+   },
+   "source": [
+    "- `copy()` (and slicing) make a **shallow** copy: a new outer list whose elements are the **same objects** as in the original.\n",
+    "\n",
+    "- That is fine for immutable elements such as numbers, but the inner lists are shared: changing one of them is seen through both lists.\n",
+    "\n",
+    "- A **deep copy** also copies, recursively, all the objects nested inside. Use `copy.deepcopy()`:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "JOmdR2YguCc2"
+   },
+   "outputs": [],
+   "source": [
+    "import copy\n",
+    "\n",
+    "l1 = [1, [2, 3], [4, 5, 6]]\n",
+    "l2 = copy.deepcopy(l1)\n",
+    "l2[1][1] = 99\n",
+    "print(l1)\n",
+    "print(l2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "cWI9rQWOwjau"
+   },
+   "source": [
+    "### Quiz: shallow copies\n",
+    "\n",
+    "What is printed?\n",
+    "\n",
+    "```python\n",
+    "grid = [[1, 2], [3, 4]]\n",
+    "other = grid.copy()\n",
+    "other[0][0] = 99\n",
+    "other[1] = [0, 0]\n",
+    "print(grid)\n",
+    "```\n",
+    "\n",
+    "- **A)** `[[1, 2], [3, 4]]`\n",
+    "- **B)** `[[99, 2], [0, 0]]`\n",
+    "- **C)** `[[1, 2], [0, 0]]`\n",
+    "- **D)** `[[99, 2], [3, 4]]`\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**D)** `other` is a new outer list, but `other[0]` and `grid[0]` are the **same** inner list,\n",
+    "so `other[0][0] = 99` is seen through `grid`.\n",
+    "On the other hand, `other[1] = [0, 0]` only changes the outer list `other`: `grid[1]` still refers to `[3, 4]`.\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "Z84ZsO2ae9f4"
+   },
+   "source": [
+    "## 9.8 Nested lists and matrices\n",
+    "\n",
+    "A nested list is a list that appears as an element of another list.\n",
+    "\n",
+    "What is printed?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "xpx2OhYvZF1I"
+   },
+   "outputs": [],
+   "source": [
+    "alist = [[4, [True, False], 6, 8], [888, 999]]\n",
+    "if alist[0][1][0]:\n",
+    "    print(alist[1][0])\n",
+    "else:\n",
+    "    print(alist[1][1])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "v98HGLPq5A9J"
+   },
+   "source": [
+    "### Matrices\n",
+    "\n",
+    "Nested lists are often used to represent matrices. For example, the matrix\n",
+    "\n",
+    "$$\\left[\n",
+    "    \\begin{array}{ccc}\n",
+    "    1  & 2  & 3 \\\\\n",
+    "    4  & 5  & 6 \\\\\n",
+    "    7  & 8  & 9\n",
+    "    \\end{array}\n",
+    "  \\right]$$\n",
+    "\n",
+    "is represented as a list of rows. (Python does not check that all the rows have the same length: that is our job.)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "45rcJJuvqfCG"
+   },
+   "outputs": [],
+   "source": [
+    "mx = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\n",
+    "print(mx[1])       # a row\n",
+    "print(mx[1][2])    # a single element: row 1, column 2"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "B0BUUFCoQ18X"
+   },
+   "source": [
+    "Remember the multiplication table (NB04)? Instead of printing it, we can now **store** it, with nested loops and two accumulators:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "8KC8Pe0K1zNL"
+   },
+   "outputs": [],
+   "source": [
+    "table = []\n",
+    "for i in range(1, 6):\n",
+    "    row = []\n",
+    "    for j in range(1, 6):\n",
+    "        row.append(i * j)\n",
+    "    table.append(row)\n",
+    "\n",
+    "print(table)\n",
+    "print(table[2][3])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "M2yP6f1QBcEk"
+   },
+   "outputs": [],
+   "source": [
+    "for row in table:\n",
+    "    for value in row:\n",
+    "        print(value, end=\"\\t\")\n",
+    "    print()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "QLKX783FSU8i"
+   },
+   "source": [
+    "### Quiz: a matrix of zeros\n",
+    "\n",
+    "Why does each row of the table need a **new** `row = []`? What is printed?\n",
+    "\n",
+    "```python\n",
+    "grid = [[0] * 3] * 3\n",
+    "grid[0][0] = 1\n",
+    "print(grid)\n",
+    "```\n",
+    "\n",
+    "- **A)** `[[1, 0, 0], [0, 0, 0], [0, 0, 0]]`\n",
+    "- **B)** `[[1, 1, 1], [0, 0, 0], [0, 0, 0]]`\n",
+    "- **C)** `[[1, 0, 0], [1, 0, 0], [1, 0, 0]]`\n",
+    "- **D)** `IndexError`\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**C)** `[[0] * 3] * 3` repeats the reference to **one** row three times (see *Repetition and references*): the matrix has only one row!\n",
+    "(`[0] * 3` itself is fine, since numbers are immutable.) Each row must be a new list:\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "IoELi9M4SGsf"
+   },
+   "outputs": [],
+   "source": [
+    "grid = []\n",
+    "for i in range(3):\n",
+    "    grid.append([0] * 3)    # a new row each time\n",
+    "grid[0][0] = 1\n",
+    "print(grid)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "mFM5NVHbuhLs"
+   },
+   "source": [
+    "### Exercise: row sums\n",
+    "\n",
+    "Write `row_sums(matrix)`, which returns a list with the sum of each row of the matrix."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Luco5BPHCQ4N"
+   },
+   "outputs": [],
+   "source": [
+    "def row_sums(matrix):\n",
+    "    \"\"\"Return a list with the sum of each row of matrix.\"\"\"\n",
+    "    return []    # skeleton\n",
+    "\n",
+    "print(row_sums([]) == [])\n",
+    "print(row_sums([[1, 2, 3], [4, 5, 6], [7, 8, 9]]) == [6, 15, 24])\n",
+    "print(row_sums([[10], [], [1, -1]]) == [10, 0, 0])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "WvraHdqCxmA4"
+   },
+   "source": [
+    "### Traversing two lists at once: `zip()`\n",
+    "\n",
+    "![zip](https://raw.githubusercontent.com/fp-leic/public/main/notebooks/08/zip.png)\n",
+    "\n",
+    "The built-in function `zip()` pairs the i-th elements of its arguments into tuples. It stops when the shortest sequence ends."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "IP9N6RYL9IuO"
+   },
+   "outputs": [],
+   "source": [
+    "names = [\"Ana\", \"Bruno\", \"Carla\"]\n",
+    "grades = [17, 9, 14]\n",
+    "for name, grade in zip(names, grades):\n",
+    "    print(f\"{name}: {grade}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "fA6jzsM0tJbo"
+   },
+   "outputs": [],
+   "source": [
+    "print(list(zip(names, grades)))\n",
+    "print(list(zip([\"x\", \"y\", \"z\"], [1, 2, 3, 4, 5])))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "AQk7iYY6LtGA"
+   },
+   "source": [
+    "### Unzipping, and the columns of a matrix\n",
+    "\n",
+    "In a function call, `*` before a list (or tuple) **spreads** its elements into separate arguments: `print(*[1, 2, 3])` is the same as `print(1, 2, 3)`.\n",
+    "\n",
+    "With `zip()`, this undoes the pairing:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "yZjHZmya9gy4"
+   },
+   "outputs": [],
+   "source": [
+    "pairs = [(\"Ana\", 17), (\"Bruno\", 9), (\"Carla\", 14)]\n",
+    "print(*pairs)\n",
+    "names, grades = zip(*pairs)    # zip((\"Ana\", 17), (\"Bruno\", 9), (\"Carla\", 14))\n",
+    "print(names)\n",
+    "print(grades)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ed1wPw7X8bbG"
+   },
+   "source": [
+    "Applied to a matrix, `zip(*mx)` pairs the first elements of all the rows, then the second ones, and so on: it gives us the **columns**."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "EuRtCu6hF8DK"
+   },
+   "outputs": [],
+   "source": [
+    "mx = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\n",
+    "for column in zip(*mx):\n",
+    "    print(column)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "NZkjLHnBNvDM"
+   },
+   "source": [
+    "## 9.9 Do we need a list? `range()` and iterators\n",
+    "\n",
+    "### `range()` is lazy\n",
+    "\n",
+    "Why did we need `list(range(5))` in section 9.1? Let's look at what `range()` gives us:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "oRTeJzcmP6lc"
+   },
+   "outputs": [],
+   "source": [
+    "r = range(10)\n",
+    "print(r)\n",
+    "print(type(r))\n",
+    "print(list(r))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "PI71dC3WPmET"
+   },
+   "source": [
+    "- `range()` does **not** build a list. It only remembers `start`, `stop` and `step`, and computes each value when it is asked for it: it is **lazy**.\n",
+    "\n",
+    "- `list()` forces it to produce all its values at once.\n",
+    "\n",
+    "- Historical note: in Python 2, `range()` built a list (the lazy version was called `xrange()`).\n",
+    "\n",
+    "Why does it matter? This function returns as soon as it finds the answer:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "R4biPHnY4H59"
+   },
+   "outputs": [],
+   "source": [
+    "def first_multiple_of_21(start, stop):\n",
+    "    \"\"\"Return the first multiple of 21 in range(start, stop), or None.\"\"\"\n",
+    "    for i in range(start, stop):\n",
+    "        if i % 21 == 0:\n",
+    "            return i\n",
+    "\n",
+    "print(first_multiple_of_21(101, 110))\n",
+    "print(first_multiple_of_21(101, 1_000_000_000_000))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ikQ2lyrBIA3f"
+   },
+   "source": [
+    "Only 5 values are ever produced. If `range()` built the whole list first, a list with a trillion elements would need terabytes of memory, and the program would crash.\n",
+    "(The underscores in `1_000_000` are ignored by Python: they only make the number easier to read.)\n",
+    "\n",
+    "`sys.getsizeof()` gives the memory used by an object, in bytes:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "ytlwlqDFX0As"
+   },
+   "outputs": [],
+   "source": [
+    "import sys\n",
+    "\n",
+    "print(sys.getsizeof(range(1_000_000)))\n",
+    "print(sys.getsizeof(list(range(1_000_000))))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "DluHEChHYHYr"
+   },
+   "source": [
+    "A range always takes the same few bytes, whatever its length. The list grows with the number of elements (and this does not even count the integers themselves).\n",
+    "\n",
+    "Even so, a range is a sequence: `len()`, indexing, slicing and `in` all work, computed with arithmetic instead of generating the values."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "0g2noa9f4DPv"
+   },
+   "outputs": [],
+   "source": [
+    "r = range(0, 1_000_000_000_000, 2)    # the even numbers below 10**12\n",
+    "print(len(r), r[10], r[-1])\n",
+    "print(r[:5])\n",
+    "print(123_456_788 in r)               # instantaneous: no search needed"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "AIY122Ql9bw2"
+   },
+   "source": [
+    "### Don't create unnecessary lists\n",
+    "\n",
+    "> Lists are useful if you need to keep data for later computation.\n",
+    ">\n",
+    "> But if you don't need lists, it is probably better not to generate them."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "kwJRKYInhNTr"
+   },
+   "outputs": [],
+   "source": [
+    "print(sum(range(1, 1_000_001)))          # no list\n",
+    "print(sum(list(range(1, 1_000_001))))    # same result, but builds a list with a million elements first\n",
+    "\n",
+    "for i in list(range(3)):    # works, but list() is useless here\n",
+    "    print(i)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "JWKUnKsKrQJi"
+   },
+   "source": [
+    "### Iterators\n",
+    "\n",
+    "`enumerate()` and `zip()` are lazy too: they do not build a list, they produce their values one at a time, when the `for` loop asks for the next one."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "gYqg9BkgRdWw"
+   },
+   "outputs": [],
+   "source": [
+    "print(enumerate([\"a\", \"b\", \"c\"]))\n",
+    "print(zip([1, 2, 3], \"abc\"))\n",
+    "print(list(enumerate([\"a\", \"b\", \"c\"])))\n",
+    "print(list(enumerate([\"a\", \"b\", \"c\"], start=1)))    # counting from 1"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "UZlPOgGurL1e"
+   },
+   "source": [
+    "Objects that work like this are called **iterators**. `iter()` gives us an iterator over any sequence, and `next()` asks it for the next value.\n",
+    "When there are no more values, `next()` raises `StopIteration`.\n",
+    "\n",
+    "This is exactly what a `for` loop does behind the scenes: it calls `iter()` once, and then `next()` until `StopIteration`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "s7ukqqeaA355"
+   },
+   "outputs": [],
+   "source": [
+    "numbers = [1, 2, 3]\n",
+    "it = iter(numbers)\n",
+    "print(next(it))\n",
+    "print(next(it))\n",
+    "print(next(it))\n",
+    "print(next(it))    # no more elements: error"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "XqA9adgpbthg"
+   },
+   "source": [
+    "### Quiz: iterators get used up\n",
+    "\n",
+    "What is printed?\n",
+    "\n",
+    "```python\n",
+    "pairs = zip([1, 2, 3], \"abc\")\n",
+    "print(len(list(pairs)))\n",
+    "print(len(list(pairs)))\n",
+    "```\n",
+    "\n",
+    "- **A)** `3` and `3`\n",
+    "- **B)** `3` and `0`\n",
+    "- **C)** `6` and `6`\n",
+    "- **D)** `3` and an error\n",
+    "\n",
+    "<details>\n",
+    "<summary><b>Answer</b></summary>\n",
+    "\n",
+    "**B)** `zip()` returns an iterator. The first `list()` consumes all its values; the second one finds nothing left.\n",
+    "If we need the values more than once, we store them in a list: `pairs = list(zip(...))`.\n",
+    "\n",
+    "`range()` does not have this problem: it is not an iterator, so each `for` loop (or `list()`) over it starts from the beginning.\n",
+    "\n",
+    "</details>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "AN23FqY0XPNy"
+   },
+   "source": [
+    "# Further reading"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "rFTcbzoSY497"
+   },
+   "source": [
+    "More about `zip()`: [Understanding the Python zip() Function](https://realpython.com/python-zip-function/)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "oJiHRN8xA3Xl"
+   },
+   "source": [
+    "### Python Lists\n",
+    "\n",
+    "Python Tutorial || Learn Python Programming -- Socratica"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "yWdY3OhIj3pd"
+   },
+   "outputs": [],
+   "source": [
+    "from IPython.display import YouTubeVideo\n",
+    "YouTubeVideo('ohCDWZgNIU0')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "Bo1lhxBH7y2i"
+   },
+   "source": [
+    "### A Random Walk & Monte Carlo Simulation\n",
+    "\n",
+    "Python Tutorial || Learn Python Programming -- Socratica"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "D3ZNf9wPggzX"
+   },
+   "outputs": [],
+   "source": [
+    "from IPython.display import YouTubeVideo\n",
+    "YouTubeVideo('BfS2H1y6tzQ')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "UxpJBphdfW7X"
+   },
+   "source": [
+    "## Credits\n",
+    "These materials have been shaped by the contributions of several people over the years. Each year, the course coordinator reviews and updates the content to ensure its quality and relevance. Below is a list of contributors who have helped improve these slides and notebooks.\n",
+    "- Ricardo Cruz, 2026\n",
+    "- Alexandra Mendes, 2025\n",
+    "- João Correia Lopes, Nuno Macedo, and Alexandra Mendes (2024)\n",
+    "- João Correia Lopes, Pedro Vasconcelos, and Nuno Macedo (2023)\n",
+    "- João Correia Lopes, Pedro Vasconcelos (< 2023)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "PBrDyZ7yrT58"
+   },
+   "source": [
+    "-- Ricardo Cruz, Mon Oct 12 2026"
+   ]
+  }
+ ],
+ "metadata": {
+  "colab": {
+   "private_outputs": true,
+   "provenance": []
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.15"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 0
+}

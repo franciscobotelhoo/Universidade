@@ -1,0 +1,920 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "o7hRfp9mNCCE"
+   },
+   "source": [
+    "# NB08: Tuples\n",
+    "\n",
+    "## Programming Fundamentals\n",
+    "\n",
+    "## L.EIC/2026-27\n",
+    "\n",
+    "#### Coordinator: Alexandra Mendes, FEUP/DEI and INESC TEC"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "lZfobqz3xhq9"
+   },
+   "source": [
+    "> “Inside every large program is a small program struggling to get out.”\n",
+    "\n",
+    "Tony Hoare"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "dMxOuQEO3Kid"
+   },
+   "source": [
+    "## Goals\n",
+    "\n",
+    "By the end of this class, the student should be able to:\n",
+    "\n",
+    "- Create tuples (including empty and singleton tuples) and explain what it means for a tuple to be immutable\n",
+    "\n",
+    "- Use on tuples the sequence operations already known from strings: indexing, slicing, `len`, `in`, `+`, `*` and traversal\n",
+    "\n",
+    "- Pack and unpack tuples: in assignments, in `for` loops, and to return several values from a function\n",
+    "\n",
+    "- Predict the result of comparing two tuples, and use tuple comparison to order data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "6Em6JT2rw2iV"
+   },
+   "source": [
+    "## Bibliography\n",
+    "\n",
+    "- Peter Wentworth, Jeffrey Elkner, Allen B. Downey, and Chris Meyers, *How to Think Like a Computer Scientist — Learning with Python 3* (Section 7) [[PDF](https://media.readthedocs.org/pdf/howtothink/latest/howtothink.pdf)]\n",
+    "[[HTML](http://openbookproject.net/thinkcs/python/english3e/)]\n",
+    "\n",
+    "- Brad Miller and David Ranum, *Learning with Python: Interactive Edition*. Based on material by Jeffrey Elkner, Allen B. Downey, and Chris Meyers (Section 10.26, Section 10.27, Section 10.28) [[HTML](https://runestone.academy/runestone/books/published/thinkcspy/index.html)]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "gQR60FmjGFe3"
+   },
+   "source": [
+    "# 8 Data types: Tuples"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "FRnpavqAxZ3k"
+   },
+   "source": [
+    "## 8.1 Tuples for grouping data\n",
+    "\n",
+    "- So far we have seen simple types (`int`, `float`, `bool`) and one type made of smaller pieces: `str`, a sequence of characters.\n",
+    "\n",
+    "- A **tuple** groups **any number of values, of any types**, into a single compound value.\n",
+    "\n",
+    "- Types made of smaller pieces are called **collections** or **compound data types**.\n",
+    "\n",
+    "- Strings, tuples, and lists (next class) keep their items in order: they are **sequences**.\n",
+    "\n",
+    "- Depending on what we are doing, we may want to treat a compound value as a single thing, or to work with its parts."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "ykP8mVsaVvkB"
+   },
+   "outputs": [],
+   "source": [
+    "year_born = (\"Dua Lipa\", 1995)      # a pair: a tuple with 2 elements\n",
+    "entry = (\"Julia\", \"Roberts\", 1967, \"Duplicity\", 2009, \"Actress\", \"Atlanta, Georgia\")\n",
+    "player = (\"Viktor\", \"Gyökeres\", 1.87, 1998, \"Sweden\", \"Football Player\", \"Arsenal F.C.\")\n",
+    "print(year_born)\n",
+    "print(entry)\n",
+    "print(type(player))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ozBzKrffgGwY"
+   },
+   "source": [
+    "Some everyday examples: a point `(x, y)`, GPS coordinates `(41.178, -8.596)`, a colour `(255, 128, 0)`, a date `(2026, 10, 12)`."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "FR8dbixJUv7a"
+   },
+   "source": [
+    "## 8.2 Creating tuples\n",
+    "\n",
+    "### It is the comma that makes the tuple\n",
+    "\n",
+    "The parentheses are optional (although we usually write them, for readability)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Zn2c7V9Jl8Bf"
+   },
+   "outputs": [],
+   "source": [
+    "point = 3, 4              # no parentheses: still a tuple\n",
+    "color = (255, 128, 0)\n",
+    "print(point, type(point))\n",
+    "print(color, type(color))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "LEDjhKChBSSD"
+   },
+   "source": [
+    "### Empty and singleton tuples\n",
+    "\n",
+    "What is the type of each variable?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "ywnmBgSRLbwA"
+   },
+   "outputs": [],
+   "source": [
+    "a = ()\n",
+    "b = (42)\n",
+    "c = (42,)\n",
+    "d = 42,\n",
+    "print(type(a), type(b), type(c), type(d))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "f8UFRmoGUOaM"
+   },
+   "source": [
+    "- `()` is the *empty tuple*.\n",
+    "\n",
+    "- `(42)` is just the number 42 inside parentheses, as in `(2 + 3) * 4`.\n",
+    "\n",
+    "- A tuple with a single element, a *singleton*, needs a trailing comma: `(42,)`.\n",
+    "\n",
+    "- A singleton is not the same as the value inside it:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "4U58nsH8w60G"
+   },
+   "outputs": [],
+   "source": [
+    "print((42,) == 42)\n",
+    "print((42,)[0] == 42)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "M7Ws0mw70tsM"
+   },
+   "source": [
+    "### Converting to a tuple\n",
+    "\n",
+    "Like `int()`, `float()` and `str()` (NB02), `tuple()` converts its argument into a tuple:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "0Q6TYLwAEGZq"
+   },
+   "outputs": [],
+   "source": [
+    "print(tuple(\"abc\"))\n",
+    "print(tuple(range(5)))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "eTqAhZqsXFr3"
+   },
+   "source": [
+    "## 8.3 Operations on tuples\n",
+    "\n",
+    "Tuples support the same sequence operations as strings (NB06), so you already know all of them.\n",
+    "\n",
+    "Predict the output before running:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "zw7WUpYKZwWX"
+   },
+   "outputs": [],
+   "source": [
+    "entry = (\"Julia\", \"Roberts\", 1967, \"Duplicity\", 2009, \"Actress\", \"Atlanta, Georgia\")\n",
+    "print(entry[0], entry[-1])\n",
+    "print(entry[1:3])\n",
+    "print(len(entry))\n",
+    "print(1967 in entry, \"Julia Roberts\" in entry)\n",
+    "print(entry.count(2009), entry.index(\"Actress\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "yOW95WiLQfC1"
+   },
+   "outputs": [],
+   "source": [
+    "print((1, 2) + (3,))\n",
+    "print((0, 1) * 3)\n",
+    "numbers = (8, 3, 5, 1)\n",
+    "print(min(numbers), max(numbers), sum(numbers))\n",
+    "for n in numbers:\n",
+    "    print(n, end=\" \")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "45fL1Otc51Ow"
+   },
+   "source": [
+    "| Operation | String | Tuple |\n",
+    "|:--|:--|:--|\n",
+    "| indexing | `s[0]`, `s[-1]` | `t[0]`, `t[-1]` |\n",
+    "| slicing | `s[1:3]` | `t[1:3]` |\n",
+    "| length | `len(s)` | `len(t)` |\n",
+    "| membership | `c in s` | `x in t` |\n",
+    "| concatenation, repetition | `s + s`, `s * 3` | `t + t`, `t * 3` |\n",
+    "| traversal | `for c in s:` | `for x in t:` |\n",
+    "| `count()`, `index()` | ✓ | ✓ |\n",
+    "| item assignment | ✗ (immutable) | ✗ (immutable) |\n",
+    "\n",
+    "For the full list, see the [Common Sequence Operations](https://docs.python.org/3/library/stdtypes.html#common-sequence-operations) in the Python documentation."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ZYSLtswuGhSv"
+   },
+   "source": [
+    "### Tuples are immutable\n",
+    "\n",
+    "Like strings, tuples are **immutable**: once a tuple is created, its elements cannot be changed.\n",
+    "\n",
+    "What do we get here?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "jpyAWgnskUgd"
+   },
+   "outputs": [],
+   "source": [
+    "entry[0] = \"X\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ITZIu2TDI695"
+   },
+   "source": [
+    "But we can build a **new** tuple from parts of the old one:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "iuzkVd3KMz6J"
+   },
+   "outputs": [],
+   "source": [
+    "print(\"Before:\", entry)\n",
+    "entry = entry[:3] + (\"Eat Pray Love\", 2010) + entry[5:]\n",
+    "print(\"After: \", entry)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "35Q8Ew0GtQDh"
+   },
+   "source": [
+    "Did we change the tuple? No: a new tuple was created, and the variable `entry` now refers to it (NB02, *assignment*)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ZE8H6rnGVZOh"
+   },
+   "source": [
+    "## 8.4 Tuple assignment\n",
+    "\n",
+    "- Python has a very powerful tuple assignment feature.\n",
+    "\n",
+    "- A tuple of variables on the left of an assignment is assigned the values from a tuple on the right.\n",
+    "\n",
+    "- Putting values together into a tuple is called **packing**; taking them apart is **unpacking**."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "ycx6vRMiQelJ"
+   },
+   "outputs": [],
+   "source": [
+    "bob = (\"Bob\", 19, \"CS\", 19.5)          # tuple packing\n",
+    "(name, age, studies, average) = bob    # tuple unpacking\n",
+    "print(f\"{name} is {age}, studies {studies} and has an average of {average}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "h7AN7g9cLO9w"
+   },
+   "source": [
+    "What do we get here?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "6ODkowvxYxMc"
+   },
+   "outputs": [],
+   "source": [
+    "(name, age, studies) = bob"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "iS3tcowwIsOW"
+   },
+   "source": [
+    "The number of variables on the left must match the number of values on the right, unless we use the\n",
+    "operator `*` for **variable-length unpacking**.\n",
+    "\n",
+    "What is the type of `others`? (Careful!)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "WTKq0r1BNEOv"
+   },
+   "outputs": [],
+   "source": [
+    "(name, *others, average) = bob\n",
+    "print(name)\n",
+    "print(others)\n",
+    "print(average)\n",
+    "print(type(others))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "JTwLCDxHRkjZ"
+   },
+   "source": [
+    "`others` is a **list**, not a tuple. Lists are the topic of the next class."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "fXVnNp2mhcSn"
+   },
+   "source": [
+    "### Swapping the values of two variables\n",
+    "\n",
+    "The usual way, with a temporary variable:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "t8TTJNaYu0z4"
+   },
+   "outputs": [],
+   "source": [
+    "a = \"gin\"\n",
+    "b = \"tonic\"\n",
+    "temp = a\n",
+    "a = b\n",
+    "b = temp\n",
+    "print(a, b)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "a8fFD9S84Ajj"
+   },
+   "source": [
+    "With tuple assignment. Why does it work? (Hint: the right-hand side is evaluated first.)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "R6PvLOpRmbdE"
+   },
+   "outputs": [],
+   "source": [
+    "a = \"gin\"\n",
+    "b = \"tonic\"\n",
+    "(a, b) = (b, a)\n",
+    "print(a, b)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "RnyQqGLzmQRl"
+   },
+   "source": [
+    "## 8.5 Tuples as return values\n",
+    "\n",
+    "- **Functions can only return a single value** (NB05).\n",
+    "\n",
+    "- But if that value is a tuple, it can group together as many values as we like.\n",
+    "\n",
+    "Remember converting a number of seconds into hours, minutes, and seconds (NB02)? Now it can be a function:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "YO1WEStOfvF2"
+   },
+   "outputs": [],
+   "source": [
+    "def to_hms(total_secs):\n",
+    "    \"\"\"Convert a number of seconds into (hours, minutes, seconds).\"\"\"\n",
+    "    hours = total_secs // 3600\n",
+    "    minutes = total_secs % 3600 // 60\n",
+    "    secs = total_secs % 60\n",
+    "    return hours, minutes, secs    # a tuple (it is the comma!)\n",
+    "\n",
+    "print(to_hms(3725))\n",
+    "h, m, s = to_hms(3725)             # unpacking the result\n",
+    "print(f\"{h}h {m}min {s}s\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Q418MMDnXLko"
+   },
+   "outputs": [],
+   "source": [
+    "import math\n",
+    "\n",
+    "def circle_stats(r):\n",
+    "    \"\"\"Return (circumference, area) of a circle of radius r.\"\"\"\n",
+    "    circumference = 2 * math.pi * r\n",
+    "    area = math.pi * r * r\n",
+    "    return (circumference, area)\n",
+    "\n",
+    "c, a = circle_stats(1)\n",
+    "print(c, a)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "nSLmQIqB9ioK"
+   },
+   "source": [
+    "Some built-in functions also return tuples. For example, `divmod(a, b)` returns `(a // b, a % b)`:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "05yVhx1PBLEH"
+   },
+   "outputs": [],
+   "source": [
+    "print(divmod(17, 5))\n",
+    "minutes, seconds = divmod(3725, 60)\n",
+    "print(minutes, seconds)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "28mU6LFxEKLh"
+   },
+   "source": [
+    "### Exercise: smallest and largest\n",
+    "\n",
+    "Write `min_max(numbers)`, which receives a non-empty tuple of numbers and returns the tuple `(smallest, largest)`,\n",
+    "**without** using `min()` or `max()`.\n",
+    "\n",
+    "Which loop pattern (NB07) is this?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "9rHmNeuxtEjE"
+   },
+   "outputs": [],
+   "source": [
+    "def min_max(numbers):\n",
+    "    \"\"\"Return (smallest, largest) of a non-empty tuple of numbers.\"\"\"\n",
+    "    pass\n",
+    "\n",
+    "print(min_max((5,)) == (5, 5))\n",
+    "print(min_max((3, 8, 1, 6)) == (1, 8))\n",
+    "print(min_max((-2, -7, -1)) == (-7, -1))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "XM86DDV2HPQF"
+   },
+   "source": [
+    "## 8.6 Tuples and loops\n",
+    "\n",
+    "### Tuple assignment in `for`\n",
+    "\n",
+    "The loop variable of a `for` can also be a tuple of variables, which unpacks each element:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "FyBDXjh5FR4T"
+   },
+   "outputs": [],
+   "source": [
+    "people = ((\"Anne\", 19), (\"Bob\", 20), (\"Charlie\", 18))\n",
+    "for name, age in people:\n",
+    "    print(f\"{name} is {age} years old\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "J7MBljX3wGQL"
+   },
+   "source": [
+    "### Composability of data structures\n",
+    "\n",
+    "- Tuple items can themselves be other tuples (or any other value).\n",
+    "\n",
+    "- Tuples can be **heterogeneous**, meaning that their elements can have different types.\n",
+    "\n",
+    "```python\n",
+    "julia_more_info = ( (\"Julia\", \"Roberts\"), (8, \"October\", 1967),\n",
+    "                    \"Actress\", (\"Atlanta\", \"Georgia\"),\n",
+    "                    [ (\"Duplicity\", 2009),\n",
+    "                      (\"Notting Hill\", 1999),\n",
+    "                      (\"Pretty Woman\", 1990),\n",
+    "                      (\"Erin Brockovich\", 2000),\n",
+    "                      (\"Eat Pray Love\", 2010),\n",
+    "                      (\"Mona Lisa Smile\", 2003),\n",
+    "                      (\"Oceans Twelve\", 2004) ])\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "r4ISQBRlHONs"
+   },
+   "source": [
+    "### Traversal of nested tuples\n",
+    "\n",
+    "Even if a tuple contains other tuples, a loop only iterates over the elements of the outermost tuple:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "lghlEJRBVbvh"
+   },
+   "outputs": [],
+   "source": [
+    "mps = ((\"Cleese\", \"John\"), (\"Gilliam\", \"Terry\"), (\"Idle\", \"Eric\"),\n",
+    "       (\"Jones\", \"Terry\"), (\"Palin\", \"Michael\"))\n",
+    "\n",
+    "for pair in mps:\n",
+    "    print(pair[1], pair[0])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "GJKBwuglEJg0"
+   },
+   "source": [
+    "Unpacking makes the code easier to read:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "bhBuGQKWDPzh"
+   },
+   "outputs": [],
+   "source": [
+    "for surname, first_name in mps:\n",
+    "    print(first_name, surname)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "elBrIP4j7a39"
+   },
+   "source": [
+    "And unpacking also works with `enumerate()` (NB06), which produces `(index, element)` pairs:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "wXFI16sn4K3n"
+   },
+   "outputs": [],
+   "source": [
+    "for i, (surname, first_name) in enumerate(mps):\n",
+    "    print(i, \":\", first_name, surname)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "0jjr5yBreBEu"
+   },
+   "source": [
+    "### Exercise: who passed?\n",
+    "\n",
+    "1. Write `passed(grades)`, which returns a **tuple** with the names of the students with a grade of at least 10.\n",
+    "   (Hint: an accumulator that starts as `()`. How do you add one name to a tuple?)\n",
+    "2. Write `average(grades)`, which returns the average grade."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "Tt84JgIMOAS9"
+   },
+   "outputs": [],
+   "source": [
+    "def passed(grades):\n",
+    "    \"\"\"Return a tuple with the names of the students with grade >= 10.\"\"\"\n",
+    "    return ()    # skeleton\n",
+    "\n",
+    "def average(grades):\n",
+    "    \"\"\"Return the average grade of a non-empty tuple of (name, grade) pairs.\"\"\"\n",
+    "    return 0    # skeleton\n",
+    "\n",
+    "grades = ((\"Ana\", 17), (\"Bruno\", 9), (\"Carla\", 14), (\"Diogo\", 8), (\"Eva\", 12))\n",
+    "print(passed(grades) == (\"Ana\", \"Carla\", \"Eva\"))\n",
+    "print(passed(()) == ())\n",
+    "print(average(grades) == 12.0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "RcMMH6dbSgiY"
+   },
+   "source": [
+    "## 8.7 Tuple comparison\n",
+    "\n",
+    "- Sequences of the same type can be compared.\n",
+    "\n",
+    "- Tuples (like strings, NB06) are **compared lexicographically**: element by element, from left to right.\n",
+    "\n",
+    "- **Equality (`==`, `!=`)**: two tuples are equal if they have the same length and the same elements, in the same order.\n",
+    "\n",
+    "- **Order (`<`, `<=`, `>`, `>=`)**: the comparison is decided by the **first pair of elements that differ**.\n",
+    "  If one tuple runs out of elements first, it is the smaller one.\n",
+    "\n",
+    "Predict each line:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "w2XPwf814FrM"
+   },
+   "outputs": [],
+   "source": [
+    "print((2, 1, 3) < (1, 2, 5))\n",
+    "print((1, 2) < (1, 2, 5))\n",
+    "print(() < (1, 2, 5))\n",
+    "print((1, 2, 3, 5) < (1, 2, 4, 6))\n",
+    "print((1, 2, 4, 5) > (1, 2, 3, 6))\n",
+    "print((1, 2, 3, 4) >= (1, 2, 3, 4))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "zlgzjq852FVk"
+   },
+   "source": [
+    "### Why is this useful?\n",
+    "\n",
+    "Dates stored as `(year, month, day)` are compared correctly, because the year is compared first, then the month, then the day.\n",
+    "\n",
+    "What about dates stored as strings?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "M8X9MsbqZGMX"
+   },
+   "outputs": [],
+   "source": [
+    "today = (2026, 10, 12)\n",
+    "christmas = (2026, 12, 25)\n",
+    "print(today < christmas)\n",
+    "print((2026, 9, 30) < (2026, 10, 1))\n",
+    "print(\"2026-9-30\" < \"2026-10-1\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "si3LbRSViqSP"
+   },
+   "source": [
+    "Strings are compared character by character, and `\"9\" > \"1\"`.\n",
+    "\n",
+    "Comparison also lets `max()`, `min()` (and sorting, in the next class) work with tuples.\n",
+    "Who is printed, and why not Ana? Why did we put the grade first in each pair?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "v8s3iC9RU2MH"
+   },
+   "outputs": [],
+   "source": [
+    "results = ((17, \"Ana\"), (9, \"Bruno\"), (17, \"Carla\"), (14, \"Diogo\"))\n",
+    "print(max(results))\n",
+    "print(min(results))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ZG7Var2haKR8"
+   },
+   "source": [
+    "## 8.8 Tuples or lists?\n",
+    "\n",
+    "In the next class we will study **lists**: sequences just like tuples, but **mutable**.\n",
+    "\n",
+    "- Use a **tuple** for a fixed group of related values that belong together: a point, a date, a student record, the result of a function.\n",
+    "\n",
+    "- Use a **list** for a collection that grows, shrinks or changes: the students of a class, the moves of a game."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "7MRG0QhMduu5"
+   },
+   "source": [
+    "# Further reading"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "nxImCsSXK1EU"
+   },
+   "source": [
+    "### The Amazing Mutable Immutable Tuple and Other Philosophic Digressions\n",
+    "\n",
+    "**Tuples are immutable**, but you can watch the following video for some additional “philosophical” perspectives."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "id": "fyu2ExP7ZXPX"
+   },
+   "outputs": [],
+   "source": [
+    "from IPython.display import YouTubeVideo\n",
+    "YouTubeVideo('EVBq1boGP6s')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "IytquF1oyqDd"
+   },
+   "source": [
+    "## Credits\n",
+    "These materials have been shaped by the contributions of several people over the years. Each year, the course coordinator reviews and updates the content to ensure its quality and relevance. Below is a list of contributors who have helped improve these slides and notebooks.\n",
+    "- Ricardo Cruz, 2026\n",
+    "- Alexandra Mendes, 2025\n",
+    "- João Correia Lopes, Nuno Macedo, and Alexandra Mendes (2024)\n",
+    "- João Correia Lopes, Pedro Vasconcelos, and Nuno Macedo (2023)\n",
+    "- João Correia Lopes, Pedro Vasconcelos (< 2023)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "M14wkTUldPxG"
+   },
+   "source": [
+    "-- Ricardo Cruz, Mon Oct 12 2026"
+   ]
+  }
+ ],
+ "metadata": {
+  "colab": {
+   "private_outputs": true,
+   "provenance": []
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.15"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 0
+}
